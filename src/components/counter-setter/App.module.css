@@ -1,0 +1,21 @@
+.inputTitle {
+    font-weight: 600;
+    color: #8d6edb;
+}
+
+.inputWrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.counterDisplay {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 2px solid #000;
+    background-color: #000;
+    border-radius: 10px;
+    padding: 40px 20px;
+    min-height: 200px;
+    width: 400px;
+}
