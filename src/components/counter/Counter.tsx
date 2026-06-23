@@ -8,7 +8,7 @@ type CounterProps = {
     resetCount: () => void;
     maxCount: number;
     minCount: number;
-    arebtnsDisabled: boolean;
+    areBtnsDisabled: boolean;
     onSetButtonClick: () => void;
 };
 
@@ -18,11 +18,11 @@ export function Counter({
     resetCount,
     maxCount,
     minCount,
-    arebtnsDisabled,
+    areBtnsDisabled,
     onSetButtonClick,
 }: CounterProps) {
-    const isIncrementBtnDisabled = currentCount >= maxCount || arebtnsDisabled;
-    const isResetBtnDisabled = currentCount === minCount || arebtnsDisabled;
+    const isIncrementBtnDisabled = currentCount >= maxCount || areBtnsDisabled;
+    const isResetBtnDisabled = currentCount === minCount || areBtnsDisabled;
     return (
         <div className={'box flex-col'}>
             <CounterDisplay

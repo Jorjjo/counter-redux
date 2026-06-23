@@ -2,103 +2,51 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import { Counter } from '../components/counter/Counter';
 import { CounterSetter } from '../components/counter-setter/CounterSetter';
-// import styles from './App.module.css';
-// import { Input } from './components/input/Input';
-// import { Button } from './components/button/Button';
-// import { Button } from './components/button/Button';
+import { useAppSelector } from '../common/hooks/useAppSelector';
+import { selectCounter } from '../model/counter-selector';
+import { useAppDispatch } from '../common/hooks/useAppDispatch';
+import {
+    incrementCountAC,
+    resetCountToStartAC,
+    setBtnDiasabledAC,
+    setMinValueAC,
+    setStartValueAC,
+} from '../model/counter-reducer';
 
-// const
-const baseStartValue = 0;
-const baseMaxValue = 1;
-
-// local storage
-function getStartValueFromLocal() {
-    const startValue = localStorage.getItem('minValue');
-    if (!startValue) return;
-
-    const startValueParsed = JSON.parse(startValue);
-    if (typeof startValueParsed !== 'number') return;
-
-    return startValueParsed;
-}
-
-function getMaxValueFromLocal() {
-    const maxValue = localStorage.getItem('maxValue');
-
-    if (!maxValue) return;
-
-    const maxValueParsed = JSON.parse(maxValue);
-    if (typeof maxValueParsed !== 'number') return;
-
-    return maxValueParsed;
-}
-
-function setStartValueToLocal(newValue: number) {
-    localStorage.setItem('minValue', JSON.stringify(newValue));
-}
-
-function setMaxValueToLocal(newValue: number) {
-    localStorage.setItem('maxValue', JSON.stringify(newValue));
-}
-
-type Tab = 'setter' | 'counter';
+export type Tab = 'setter' | 'counter';
 
 function App() {
-    const [count, setCount] = useState(baseStartValue);
-    const [btnsDisabled, setBtnDiasabled] = useState(false);
     const [activeDisplay, setActiveDisplay] = useState<Tab>('counter');
 
+    const counter = useAppSelector(selectCounter);
+    const dispatch = useAppDispatch();
     // запускается толькко 1 раз при монтировании компонента(component didMount), выполняет ресет до стартового значения в правом баре
     useEffect(() => {
-        resetCountToStart();
+        dispatch(resetCountToStartAC());
     }, []);
-
-    // тру гетеры, не local storage
-    function getStartValue() {
-        const valueFromLocal = getStartValueFromLocal();
-
-        if (valueFromLocal) return valueFromLocal;
-
-        return baseStartValue;
-    }
-
-    function getMaxValue() {
-        const valueFromLocal = getMaxValueFromLocal();
-        if (valueFromLocal) return valueFromLocal;
-        return baseMaxValue;
-    }
 
     // handler для обнуления
     function resetCountToStart() {
-        const startValue = getStartValueFromLocal();
-        setBtnDiasabled(false);
+        dispatch(resetCountToStartAC());
 
-        if (typeof startValue === 'undefined') {
-            console.error('ERROR! No startValue in local storage');
-            return;
-        }
         setActiveDisplay('counter');
-        setCount(startValue);
     }
 
     function handleMessageOnChange() {
-        setBtnDiasabled(true);
+        dispatch(setBtnDiasabledAC());
     }
 
     // handler для увеличения
     function incrementCount() {
-        const maxValue = getMaxValueFromLocal();
+        dispatch(incrementCountAC());
+    }
 
-        if (typeof maxValue === 'undefined') {
-            console.error('ERROR! No maxValue in local storage');
-            return;
-        }
+    function setStartValue(newValue: number) {
+        dispatch(setStartValueAC({ newValue }));
+    }
 
-        if (count >= maxValue) {
-            return;
-        }
-
-        setCount(count + 1);
+    function setMaxValue(newValue: number) {
+        dispatch(setMinValueAC({ newValue }));
     }
 
     return (
@@ -108,23 +56,23 @@ function App() {
                 <CounterSetter
                     // TODO не resetCountToStart, а функция (придумай имя), которая  делает сама resetCountToStart + выбирает нужную вкладку
                     onSetMinMax={resetCountToStart}
-                    baseMaxValue={getMaxValue()}
-                    baseStartValue={getStartValue()}
-                    onStartChange={setStartValueToLocal}
-                    onMaxChange={setMaxValueToLocal}
+                    onStartChange={setStartValue}
+                    onMaxChange={setMaxValue}
                     onChange={handleMessageOnChange}
+                    maxValue={counter.maxValue}
+                    minValue={counter.startValue}
                 />
             ) : null}
 
             {/* right +- */}
             {activeDisplay === 'counter' ? (
                 <Counter
-                    currentCount={count}
+                    currentCount={counter.count}
                     incrementCount={incrementCount}
                     resetCount={resetCountToStart}
-                    maxCount={getMaxValue()}
-                    minCount={getStartValue()}
-                    arebtnsDisabled={btnsDisabled}
+                    maxCount={counter.maxValue}
+                    minCount={counter.startValue}
+                    areBtnsDisabled={counter.btnsDisabled}
                     onSetButtonClick={() => {
                         setActiveDisplay('setter');
                     }}

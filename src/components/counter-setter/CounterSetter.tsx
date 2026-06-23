@@ -5,25 +5,22 @@ import { Button } from '../button/Button';
 
 type SetterProps = {
     onSetMinMax: () => void;
-    baseMaxValue: number;
-    baseStartValue: number;
     onStartChange: (startValue: number) => void;
     onMaxChange: (maxValue: number) => void;
     onChange: () => void;
+    maxValue: number;
+    minValue: number;
 };
 export function CounterSetter({
     onSetMinMax,
-    baseMaxValue,
-    baseStartValue,
     onStartChange,
     onMaxChange,
     onChange,
+    minValue,
+    maxValue,
 }: SetterProps) {
-    const [startValue, setStartValue] = useState(baseStartValue);
-    const [maxValue, setMaxValue] = useState(baseMaxValue);
     const [startValueError, setStartValueError] = useState<string | null>(null);
     const [maxValueError, setMaxValueError] = useState<string | null>(null);
-    console.log('1', startValue);
 
     const getIsBtnDisabled = () => {
         let isBtnDisabled = false;
@@ -39,7 +36,7 @@ export function CounterSetter({
     };
 
     const handleStartChange = (value: number) => {
-        setStartValue(value);
+        onStartChange(value);
         onChange();
 
         if (value >= maxValue || value < 0) {
@@ -50,9 +47,9 @@ export function CounterSetter({
     };
 
     const handleMaxChange = (value: number) => {
-        setMaxValue(value);
+        onMaxChange(value);
         onChange();
-        if (value <= startValue || value <= 0) {
+        if (value <= minValue || value <= 0) {
             setMaxValueError('error');
 
             return;
@@ -61,7 +58,7 @@ export function CounterSetter({
     };
 
     const onBtnClick = () => {
-        onStartChange(startValue);
+        onStartChange(minValue);
         onMaxChange(maxValue);
         onSetMinMax();
     };
@@ -73,7 +70,7 @@ export function CounterSetter({
                     <h2 className={styles.inputTitle}>min value:</h2>
                     <Input
                         error={startValueError}
-                        value={startValue}
+                        value={minValue}
                         onChange={handleStartChange}
                     />
                 </div>
