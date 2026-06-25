@@ -2,25 +2,27 @@ import { useState } from 'react';
 import styles from './App.module.css';
 import { Input } from '../input/Input';
 import { Button } from '../button/Button';
+import { useAppDispatch } from '../../common/hooks/useAppDispatch';
+import {
+    setBtnDiasabledAC,
+    setMaxValueAC,
+    setStartValueAC,
+} from '../../model/counter-reducer';
 
 type SetterProps = {
     onSetMinMax: () => void;
-    onStartChange: (startValue: number) => void;
-    onMaxChange: (maxValue: number) => void;
-    onChange: () => void;
     maxValue: number;
     minValue: number;
 };
 export function CounterSetter({
     onSetMinMax,
-    onStartChange,
-    onMaxChange,
-    onChange,
     minValue,
     maxValue,
 }: SetterProps) {
     const [startValueError, setStartValueError] = useState<string | null>(null);
     const [maxValueError, setMaxValueError] = useState<string | null>(null);
+
+    const dispatch = useAppDispatch();
 
     const getIsBtnDisabled = () => {
         let isBtnDisabled = false;
@@ -36,8 +38,8 @@ export function CounterSetter({
     };
 
     const handleStartChange = (value: number) => {
-        onStartChange(value);
-        onChange();
+        dispatch(setStartValueAC({ newValue: value }));
+        dispatch(setBtnDiasabledAC());
 
         if (value >= maxValue || value < 0) {
             setStartValueError('error');
@@ -47,8 +49,8 @@ export function CounterSetter({
     };
 
     const handleMaxChange = (value: number) => {
-        onMaxChange(value);
-        onChange();
+        dispatch(setMaxValueAC({ newValue: value }));
+        dispatch(setBtnDiasabledAC());
         if (value <= minValue || value <= 0) {
             setMaxValueError('error');
 
@@ -58,8 +60,8 @@ export function CounterSetter({
     };
 
     const onBtnClick = () => {
-        onStartChange(minValue);
-        onMaxChange(maxValue);
+        dispatch(setStartValueAC({ newValue: minValue }));
+        dispatch(setMaxValueAC({ newValue: maxValue }));
         onSetMinMax();
     };
 

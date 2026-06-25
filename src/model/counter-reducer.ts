@@ -18,7 +18,7 @@ export const incrementCountAC = createAction('counter/incrementCount');
 export const setStartValueAC = createAction<{ newValue: number }>(
     'counter/setStartValue',
 );
-export const setMinValueAC = createAction<{ newValue: number }>(
+export const setMaxValueAC = createAction<{ newValue: number }>(
     'counter/setMinValue',
 );
 
@@ -41,7 +41,7 @@ export const counterReducer = createReducer(initialState, (builder) => {
         .addCase(setStartValueAC, (state, action) => {
             state.startValue = action.payload.newValue;
         })
-        .addCase(setMinValueAC, (state, action) => {
+        .addCase(setMaxValueAC, (state, action) => {
             state.maxValue = action.payload.newValue;
         });
 });

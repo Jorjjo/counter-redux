@@ -8,9 +8,6 @@ import { useAppDispatch } from '../common/hooks/useAppDispatch';
 import {
     incrementCountAC,
     resetCountToStartAC,
-    setBtnDiasabledAC,
-    setMinValueAC,
-    setStartValueAC,
 } from '../model/counter-reducer';
 
 export type Tab = 'setter' | 'counter';
@@ -32,21 +29,9 @@ function App() {
         setActiveDisplay('counter');
     }
 
-    function handleMessageOnChange() {
-        dispatch(setBtnDiasabledAC());
-    }
-
     // handler для увеличения
     function incrementCount() {
         dispatch(incrementCountAC());
-    }
-
-    function setStartValue(newValue: number) {
-        dispatch(setStartValueAC({ newValue }));
-    }
-
-    function setMaxValue(newValue: number) {
-        dispatch(setMinValueAC({ newValue }));
     }
 
     return (
@@ -56,9 +41,6 @@ function App() {
                 <CounterSetter
                     // TODO не resetCountToStart, а функция (придумай имя), которая  делает сама resetCountToStart + выбирает нужную вкладку
                     onSetMinMax={resetCountToStart}
-                    onStartChange={setStartValue}
-                    onMaxChange={setMaxValue}
-                    onChange={handleMessageOnChange}
                     maxValue={counter.maxValue}
                     minValue={counter.startValue}
                 />
